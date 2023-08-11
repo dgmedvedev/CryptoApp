@@ -3,11 +3,15 @@ package com.demo.cryptoapp
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import com.demo.cryptoapp.api.ApiFactory
 import com.demo.cryptoapp.database.AppDatabase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.demo.cryptoapp.pojo.CoinPriceInfo
+import com.demo.cryptoapp.pojo.CoinPriceInfoRawData
+import com.google.gson.Gson
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -16,17 +20,50 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
     val priceList = db.coinPriceInfoDao().getPriceList()
 
-    fun loadData() {
-        val disposable = ApiFactory.apiService.getTopCoinsInfo()
+    fun getDetailInfo(fSym: String): LiveData<CoinPriceInfo> {
+        return db.coinPriceInfoDao().getPriceInfoAboutCoin(fSym)
+    }
+
+    init {
+        loadData()
+    }
+
+    private fun loadData() {
+        val disposable = ApiFactory.apiService.getTopCoinsInfo(limit = 50)
+            .map { it.data?.map { it.coinInfo?.name }?.joinToString(",") ?: "" }
+            .flatMap { ApiFactory.apiService.getFullPriceList(fSyms = it) }
+            .map { getPriceListFromRawData(it) }
+            .delaySubscription(10, TimeUnit.SECONDS)
+            .repeat()
+            .retry()
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                val names = it.data?.map { it.coinInfo?.name }?.joinToString(",")
-                Log.d("TEST_OF_LOADING_DATA", names.toString())
+                db.coinPriceInfoDao().insertPriceList(it)
+                Log.d("TEST_OF_LOADING_DATA", "Success: $it")
             }, {
-                Log.d("TEST_OF_LOADING_DATA", it.message.toString())
+                Log.d("TEST_OF_LOADING_DATA", "Failure: ${it.message}")
             })
         compositeDisposable.add(disposable)
+    }
+
+    private fun getPriceListFromRawData(
+        coinPriceInfoRawData: CoinPriceInfoRawData
+    ): List<CoinPriceInfo> {
+        val result = ArrayList<CoinPriceInfo>()
+        val jsonObject = coinPriceInfoRawData.coinPriceInfoJsonObject ?: return result
+        val coinKeySet = jsonObject.keySet()           // "BTC","ETH","XRP"...
+        for (coinKey in coinKeySet) {
+            val currencyJson = jsonObject.getAsJsonObject(coinKey)
+            val currencyKeySet = currencyJson.keySet() // "USD"
+            for (currencyKey in currencyKeySet) {
+                val priceInfo = Gson().fromJson(       // Object from JSON
+                    currencyJson.getAsJsonObject(currencyKey),
+                    CoinPriceInfo::class.java
+                )
+                result.add(priceInfo)
+            }
+        }
+        return result
     }
 
     override fun onCleared() {
