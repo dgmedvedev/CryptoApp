@@ -155,8 +155,8 @@ data class CoinPriceInfo(
     @Expose
     val imageUrl: String?
 ) {
-    fun getFormattedTime() {
-        convertTimestampToTime(lastUpdate)
+    fun getFormattedTime(): String {
+        return convertTimestampToTime(lastUpdate)
     }
 
     fun getFullImageUrl(): String {

@@ -41,7 +41,7 @@
             tools:text="29488.60" />
 
         <TextView
-            android:id="@+id/tvLastTimeUpdate"
+            android:id="@+id/tvLastUpdate"
             style="@style/CardViewTextStyle"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
