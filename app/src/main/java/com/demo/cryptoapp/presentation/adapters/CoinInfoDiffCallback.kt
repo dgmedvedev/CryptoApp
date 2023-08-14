@@ -1,7 +1,7 @@
-package com.demo.cryptoapp.adapters
+package com.demo.cryptoapp.presentation.adapters
 
 import androidx.recyclerview.widget.DiffUtil
-import com.demo.cryptoapp.pojo.CoinPriceInfo
+import com.demo.cryptoapp.data.model.CoinPriceInfo
 
 class CoinInfoDiffCallback : DiffUtil.ItemCallback<CoinPriceInfo>() {
     override fun areItemsTheSame(oldItem: CoinPriceInfo, newItem: CoinPriceInfo): Boolean {

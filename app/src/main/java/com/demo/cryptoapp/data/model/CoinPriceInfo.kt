@@ -1,8 +1,8 @@
-package com.demo.cryptoapp.pojo
+package com.demo.cryptoapp.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.demo.cryptoapp.api.ApiFactory
+import com.demo.cryptoapp.data.network.ApiFactory
 import com.demo.cryptoapp.utils.convertTimestampToTime
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

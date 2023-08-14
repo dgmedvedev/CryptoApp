@@ -1,11 +1,11 @@
-package com.demo.cryptoapp
+package com.demo.cryptoapp.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.demo.cryptoapp.adapters.CoinInfoAdapter
+import com.demo.cryptoapp.presentation.adapters.CoinInfoAdapter
 import com.demo.cryptoapp.databinding.ActivityCoinPriceListBinding
-import com.demo.cryptoapp.pojo.CoinPriceInfo
+import com.demo.cryptoapp.data.model.CoinPriceInfo
 
 class CoinPriceListActivity : AppCompatActivity() {
 
