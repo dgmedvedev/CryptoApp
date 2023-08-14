@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.cryptoapp.R
 import com.demo.cryptoapp.databinding.ItemCoinInfoBinding
-import com.demo.cryptoapp.data.model.CoinPriceInfo
+import com.demo.cryptoapp.data.network.model.CoinInfoDto
 import com.squareup.picasso.Picasso
 
 class CoinInfoAdapter(private val context: Context) :
-    ListAdapter<CoinPriceInfo, CoinInfoAdapter.CoinInfoViewHolder>(CoinInfoDiffCallback()) {
+    ListAdapter<CoinInfoDto, CoinInfoAdapter.CoinInfoViewHolder>(CoinInfoDiffCallback()) {
 
     var onCoinClickListener: OnCoinClickListener? = null
 
@@ -48,6 +48,6 @@ class CoinInfoAdapter(private val context: Context) :
     }
 
     interface OnCoinClickListener {
-        fun onCoinClick(coinPriceInfo: CoinPriceInfo)
+        fun onCoinClick(coinPriceInfo: CoinInfoDto)
     }
 }
