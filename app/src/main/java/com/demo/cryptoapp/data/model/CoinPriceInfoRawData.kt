@@ -1,4 +1,4 @@
-package com.demo.cryptoapp.pojo
+package com.demo.cryptoapp.data.model
 
 import com.google.gson.JsonObject
 import com.google.gson.annotations.Expose
