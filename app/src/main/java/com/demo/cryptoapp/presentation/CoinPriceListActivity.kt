@@ -1,11 +1,12 @@
 package com.demo.cryptoapp.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.demo.cryptoapp.presentation.adapters.CoinInfoAdapter
 import com.demo.cryptoapp.databinding.ActivityCoinPriceListBinding
-import com.demo.cryptoapp.data.model.CoinPriceInfo
+import com.demo.cryptoapp.domain.CoinInfo
+import com.demo.cryptoapp.presentation.adapters.CoinInfoAdapter
 
 class CoinPriceListActivity : AppCompatActivity() {
 
@@ -21,16 +22,17 @@ class CoinPriceListActivity : AppCompatActivity() {
         setContentView(binding.root)
         val adapter = CoinInfoAdapter(this)
         adapter.onCoinClickListener = object : CoinInfoAdapter.OnCoinClickListener {
-            override fun onCoinClick(coinPriceInfo: CoinPriceInfo) {
+            override fun onCoinClick(coinInfo: CoinInfo) {
                 val intent = CoinDetailActivity.newIntent(
                     this@CoinPriceListActivity,
-                    coinPriceInfo.fromSymbol
+                    coinInfo.fromSymbol
                 )
                 startActivity(intent)
             }
         }
         binding.rvCoinPriceList.adapter = adapter
-        viewModel.priceList.observe(this) {
+        viewModel.coinInfoList.observe(this) {
+            Log.d("LOAD_DATA", "observeList: $it")
             adapter.submitList(it)
         }
     }
