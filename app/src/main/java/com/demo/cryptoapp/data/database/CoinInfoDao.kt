@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface CoinPriceInfoDao {
+interface CoinInfoDao {
     @Query("SELECT*FROM full_price_list ORDER BY lastUpdate DESC")
     fun getPriceList(): LiveData<List<CoinInfoDbModel>>
 
@@ -15,5 +15,5 @@ interface CoinPriceInfoDao {
     fun getPriceInfoAboutCoin(fSym: String): LiveData<CoinInfoDbModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPriceList(priceList: List<CoinInfoDbModel>)
+    suspend fun insertPriceList(priceList: List<CoinInfoDbModel>)
 }
