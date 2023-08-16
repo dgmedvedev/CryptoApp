@@ -4,14 +4,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.demo.cryptoapp.R
 import com.demo.cryptoapp.databinding.ItemCoinInfoBinding
 import com.demo.cryptoapp.domain.CoinInfo
 import com.squareup.picasso.Picasso
 
 class CoinInfoAdapter(private val context: Context) :
-    ListAdapter<CoinInfo, CoinInfoAdapter.CoinInfoViewHolder>(CoinInfoDiffCallback()) {
+    ListAdapter<CoinInfo, CoinInfoViewHolder>(CoinInfoDiffCallback()) {
 
     var onCoinClickListener: OnCoinClickListener? = null
 
@@ -26,26 +25,22 @@ class CoinInfoAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: CoinInfoViewHolder, position: Int) {
         val coin = getItem(position)
-        with(holder) {
+        with(holder.binding) {
             val symbolsTemplate = context.getString(R.string.symbol_template)
             val lastUpdateTemplate = context.getString(R.string.last_update_template)
-            tvSymbols.text = String.format(symbolsTemplate, coin.fromSymbol, coin.toSymbol)
+            tvSymbols.text = String.format(
+                symbolsTemplate,
+                coin.fromSymbol,
+                coin.toSymbol
+            )
             tvPrice.text = coin.price.toString()
             tvLastUpdate.text =
                 String.format(lastUpdateTemplate, coin.lastUpdate)
             Picasso.get().load(coin.imageUrl).into(ivLogoCoin)
-            itemView.setOnClickListener {
+            root.setOnClickListener {
                 onCoinClickListener?.onCoinClick(coin)
             }
         }
-    }
-
-    inner class CoinInfoViewHolder(binding: ItemCoinInfoBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        val ivLogoCoin = binding.ivLogoCoin
-        val tvSymbols = binding.tvSymbols
-        val tvPrice = binding.tvPrice
-        val tvLastUpdate = binding.tvLastUpdate
     }
 
     interface OnCoinClickListener {
