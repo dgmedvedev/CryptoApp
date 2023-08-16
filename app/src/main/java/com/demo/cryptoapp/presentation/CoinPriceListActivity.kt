@@ -1,7 +1,6 @@
 package com.demo.cryptoapp.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.demo.cryptoapp.databinding.ActivityCoinPriceListBinding
@@ -31,8 +30,8 @@ class CoinPriceListActivity : AppCompatActivity() {
             }
         }
         binding.rvCoinPriceList.adapter = adapter
+
         viewModel.coinInfoList.observe(this) {
-            Log.d("LOAD_DATA", "observeList: $it")
             adapter.submitList(it)
         }
     }
