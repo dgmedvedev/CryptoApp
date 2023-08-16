@@ -18,6 +18,7 @@ class CoinMapper {
         lastMarket = dto.lastMarket,
         imageUrl = dto.imageUrl
     )
+
     fun mapJsonContainerToListCoinInfo(jsonContainer: CoinInfoJsonContainerDto): List<CoinInfoDto> {
         val result = mutableListOf<CoinInfoDto>()
         val jsonObject = jsonContainer.json ?: return result
@@ -35,9 +36,11 @@ class CoinMapper {
         }
         return result
     }
+
     fun mapNamesListToString(namesListDto: CoinNamesListDto): String {
         return namesListDto.names?.map { it.coinNameDto?.name }?.joinToString(",") ?: ""
     }
+
     fun mapDbModelToEntity(dbModel: CoinInfoDbModel) = CoinInfo(
         fromSymbol = dbModel.fromSymbol,
         toSymbol = dbModel.toSymbol,
@@ -48,4 +51,10 @@ class CoinMapper {
         lastMarket = dbModel.lastMarket,
         imageUrl = dbModel.imageUrl
     )
+
+    fun mapListDbModelToListEntities(listDbModel: List<CoinInfoDbModel>): List<CoinInfo> {
+        return listDbModel.map {
+            mapDbModelToEntity(it)
+        }
+    }
 }

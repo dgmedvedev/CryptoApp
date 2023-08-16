@@ -1,7 +1,6 @@
 package com.demo.cryptoapp.data.repository
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.demo.cryptoapp.data.database.AppDatabase
@@ -22,9 +21,8 @@ class CoinRepositoryImpl(
     override fun getCoinInfoList(): LiveData<List<CoinInfo>> {
         return MediatorLiveData<List<CoinInfo>>().apply {
             addSource(coinInfoDao.getPriceList()) {
-                it.map {
-                    mapper.mapDbModelToEntity(it)
-                }
+//              it.map { mapper.mapDbModelToEntity(it) } - невозможно будет подписаться
+                value = mapper.mapListDbModelToListEntities(it)
             }
         }
     }
@@ -45,10 +43,7 @@ class CoinRepositoryImpl(
                 val jsonContainer = apiService.getFullPriceList(fSyms = fSyms)
                 val coinInfoDtoList = mapper.mapJsonContainerToListCoinInfo(jsonContainer)
                 val dbModelList = coinInfoDtoList.map { mapper.mapDtoToDbModel(it) }
-                Log.d("LOAD_DATA", dbModelList.toString())
                 coinInfoDao.insertPriceList(dbModelList)
-                val sizeList = coinInfoDao.getPriceList().value?.size.toString()
-                Log.d("LOAD_DATA", "sizeList from DB = $sizeList")
             } catch (e: Exception) {
             }
             delay(10000)
