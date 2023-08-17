@@ -30,7 +30,8 @@ class CoinRepositoryImpl(
     override fun getCoinInfo(fromSymbol: String): LiveData<CoinInfo> {
         return MediatorLiveData<CoinInfo>().apply {
             addSource(coinInfoDao.getPriceInfoAboutCoin(fromSymbol)) {
-                mapper.mapDbModelToEntity(it)
+//              mapper.mapDbModelToEntity(it) - невозможно будет подписаться
+                value = mapper.mapDbModelToEntity(it)
             }
         }
     }
