@@ -2,12 +2,10 @@ package com.demo.cryptoapp.presentation
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import com.demo.cryptoapp.data.repository.CoinRepositoryImpl
 import com.demo.cryptoapp.domain.GetCoinInfoListUseCase
 import com.demo.cryptoapp.domain.GetCoinInfoUseCase
 import com.demo.cryptoapp.domain.LoadDataUseCase
-import kotlinx.coroutines.launch
 
 class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -22,8 +20,6 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
     fun getDetailInfo(fSym: String) = getCoinInfoUseCase(fSym)
 
     init {
-        viewModelScope.launch {
-            loadDataUseCase()
-        }
+        loadDataUseCase()
     }
 }
