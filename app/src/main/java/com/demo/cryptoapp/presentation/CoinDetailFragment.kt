@@ -51,8 +51,6 @@ class CoinDetailFragment : Fragment() {
     }
 
     private fun getSymbol(): String {
-        val args = requireArguments()
-        val result = args.getString(EXTRA_FROM_SYMBOL)
         return requireArguments().getString(
             EXTRA_FROM_SYMBOL,
             EMPTY_SYMBOL

@@ -18,6 +18,8 @@ class CoinRepositoryImpl(
     private val coinInfoDao = AppDatabase.getInstance(application).coinInfoDao()
     private val mapper = CoinMapper()
 
+    private val workManager = WorkManager.getInstance(application)
+
     override fun getCoinInfoList(): LiveData<List<CoinInfo>> {
         return MediatorLiveData<List<CoinInfo>>().apply {
             addSource(coinInfoDao.getPriceList()) {
@@ -37,11 +39,14 @@ class CoinRepositoryImpl(
     }
 
     override fun loadData() {
-        val workManager = WorkManager.getInstance(application)
         workManager.enqueueUniqueWork(
             RefreshDataWorker.NAME,
             ExistingWorkPolicy.REPLACE,
             RefreshDataWorker.makeRequest()
         )
+    }
+
+    override fun stopAllWorkers() {
+        workManager.cancelAllWork()
     }
 }

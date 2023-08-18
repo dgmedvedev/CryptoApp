@@ -40,10 +40,15 @@ class CoinInfoAdapter(private val context: Context) :
             root.setOnClickListener {
                 onCoinClickListener?.onCoinClick(coin)
             }
+            root.setOnLongClickListener {
+                onCoinClickListener?.onCoinLongClick(coin)
+                true
+            }
         }
     }
 
     interface OnCoinClickListener {
         fun onCoinClick(coinInfo: CoinInfo)
+        fun onCoinLongClick(coinInfo: CoinInfo)
     }
 }

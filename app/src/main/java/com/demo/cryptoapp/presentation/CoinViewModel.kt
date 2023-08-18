@@ -6,6 +6,7 @@ import com.demo.cryptoapp.data.repository.CoinRepositoryImpl
 import com.demo.cryptoapp.domain.GetCoinInfoListUseCase
 import com.demo.cryptoapp.domain.GetCoinInfoUseCase
 import com.demo.cryptoapp.domain.LoadDataUseCase
+import com.demo.cryptoapp.domain.StopAllWorkersUseCase
 
 class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -14,6 +15,7 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
     private val getCoinInfoListUseCase = GetCoinInfoListUseCase(repository)
     private val getCoinInfoUseCase = GetCoinInfoUseCase(repository)
     private val loadDataUseCase = LoadDataUseCase(repository)
+    private val stopAllWorkersUseCase = StopAllWorkersUseCase(repository)
 
     val coinInfoList = getCoinInfoListUseCase()
 
@@ -21,5 +23,9 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         loadDataUseCase()
+    }
+
+    fun stopAllWorkers() {
+        stopAllWorkersUseCase()
     }
 }

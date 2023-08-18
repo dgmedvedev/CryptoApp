@@ -1,6 +1,7 @@
 package com.demo.cryptoapp.presentation
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.demo.cryptoapp.R
@@ -28,6 +29,15 @@ class CoinPriceListActivity : AppCompatActivity() {
                 } else {
                     launchDetailFragment(coinInfo.fromSymbol)
                 }
+            }
+
+            override fun onCoinLongClick(coinInfo: CoinInfo) {
+                viewModel.stopAllWorkers()
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.background_update_disabled),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         binding.rvCoinPriceList.adapter = adapter
