@@ -51,7 +51,7 @@ class CoinMapper {
         highDay = dbModel.highDay,
         lowDay = dbModel.lowDay,
         lastMarket = dbModel.lastMarket,
-        imageUrl = BASE_IMAGE_URL + dbModel.imageUrl
+        imageUrl = dbModel.imageUrl
     )
 
     fun mapDbModelToEntity(dbModel: CoinInfoDbModel) = CoinInfo(

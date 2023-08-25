@@ -41,8 +41,10 @@
         android:id="@+id/rvCoinFavouriteList"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchList" />
+        app:layout_constraintTop_toBottomOf="@+id/switchList"
+        tools:listitem="@layout/item_coin_info" />
 </androidx.constraintlayout.widget.ConstraintLayout>
