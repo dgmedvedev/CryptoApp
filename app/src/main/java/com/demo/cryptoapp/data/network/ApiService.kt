@@ -17,7 +17,7 @@ interface ApiService {
     @GET("pricemultifull")
     suspend fun getFullPriceList(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = "",
-        @Query(QUERY_PARAM_FROM_SYMBOLS) fSyms: String,
+        @Query(QUERY_PARAM_FROM_SYMBOLS) fSyms: String = "",
         @Query(QUERY_PARAM_TO_SYMBOLS) tSyms: String = CURRENCY
     ): CoinInfoJsonContainerDto
 

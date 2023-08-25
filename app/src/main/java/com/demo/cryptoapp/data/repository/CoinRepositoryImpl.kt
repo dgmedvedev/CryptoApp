@@ -8,6 +8,7 @@ import androidx.work.WorkManager
 import com.demo.cryptoapp.data.database.AppDatabase
 import com.demo.cryptoapp.data.mapper.CoinMapper
 import com.demo.cryptoapp.data.workers.RefreshDataWorker
+import com.demo.cryptoapp.domain.CoinFavouriteInfo
 import com.demo.cryptoapp.domain.CoinInfo
 import com.demo.cryptoapp.domain.CoinRepository
 
@@ -29,11 +30,27 @@ class CoinRepositoryImpl(
         }
     }
 
+    override fun getCoinFavouriteInfoList(): LiveData<List<CoinFavouriteInfo>> {
+        return MediatorLiveData<List<CoinFavouriteInfo>>().apply {
+            addSource(coinInfoDao.getPriceFavouriteList()) {
+                value = mapper.mapFavouriteListDbModelToFavouriteListEntities(it)
+            }
+        }
+    }
+
     override fun getCoinInfo(fromSymbol: String): LiveData<CoinInfo> {
         return MediatorLiveData<CoinInfo>().apply {
             addSource(coinInfoDao.getPriceInfoAboutCoin(fromSymbol)) {
 //              mapper.mapDbModelToEntity(it) - невозможно будет подписаться
                 value = mapper.mapDbModelToEntity(it)
+            }
+        }
+    }
+
+    override fun getCoinFavouriteInfo(fromSymbol: String): LiveData<CoinFavouriteInfo> {
+        return MediatorLiveData<CoinFavouriteInfo>().apply {
+            addSource(coinInfoDao.getPriceInfoAboutCoinFavourite(fromSymbol)) {
+                value = mapper.mapFavouriteDbModelToFavouriteEntity(it)
             }
         }
     }
