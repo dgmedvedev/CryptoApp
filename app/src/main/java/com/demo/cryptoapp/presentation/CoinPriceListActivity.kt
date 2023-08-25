@@ -46,6 +46,10 @@ class CoinPriceListActivity : AppCompatActivity() {
         viewModel.coinInfoList.observe(this) {
             adapter.submitList(it)
         }
+
+        binding.tvFavourite.setOnClickListener {
+            launchFavouriteActivity()
+        }
     }
 
     private fun launchDetailActivity(fromSymbol: String) {
@@ -53,6 +57,11 @@ class CoinPriceListActivity : AppCompatActivity() {
             this@CoinPriceListActivity,
             fromSymbol
         )
+        startActivity(intent)
+    }
+
+    private fun launchFavouriteActivity() {
+        val intent = CoinFavouriteActivity.newIntent(this)
         startActivity(intent)
     }
 

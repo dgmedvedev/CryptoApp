@@ -14,6 +14,9 @@
         android:theme="@style/Theme.CryptoApp"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.CoinFavouriteActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.CoinDetailActivity"
             android:exported="false" />
         <activity

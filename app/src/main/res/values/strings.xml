@@ -10,4 +10,6 @@
     <string name="last_market_label">Последняя сделка:</string>
     <string name="last_updated_label">Обновлено:</string>
     <string name="background_update_disabled">Фоновое обновление отключено</string>
+    <string name="total">Total</string>
+    <string name="favourite">Favourite</string>
 </resources>
