@@ -17,22 +17,18 @@
 
     <TextView
         android:id="@+id/tvTotal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextViewLabelListsStyle"
         android:layout_marginEnd="8dp"
         android:text="@string/total"
-        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/switchList"
         app:layout_constraintEnd_toStartOf="@+id/switchList"
         app:layout_constraintTop_toTopOf="@+id/switchList" />
 
     <TextView
         android:id="@+id/tvFavourite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextViewLabelListsStyle"
         android:layout_marginStart="8dp"
         android:text="@string/favourite"
-        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/switchList"
         app:layout_constraintStart_toEndOf="@+id/switchList"
         app:layout_constraintTop_toTopOf="@+id/switchList" />
@@ -41,11 +37,11 @@
         android:id="@+id/rvCoinPriceList"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/switchList"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_coin_info" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

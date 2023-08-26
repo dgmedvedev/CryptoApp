@@ -28,11 +28,42 @@ class CoinPriceListActivity : AppCompatActivity() {
         coinInfoAdapter = CoinInfoAdapter(this)
         coinFavouriteInfoAdapter = CoinFavouriteInfoAdapter(this)
 
-        setClickListeners(coinInfoAdapter, coinFavouriteInfoAdapter)
+        observeViewModel()
+        setAdaptersClickListeners(coinInfoAdapter, coinFavouriteInfoAdapter)
 
-        binding.rvCoinPriceList.adapter = coinInfoAdapter
-        binding.rvCoinPriceList.itemAnimator = null
+        with(binding) {
+            rvCoinPriceList.adapter = coinInfoAdapter
+            rvCoinPriceList.itemAnimator = null
+            tvTotal.setTextColor(getColor(R.color.teal_200))
 
+            tvTotal.setOnClickListener {
+                tvFavourite.setTextColor(getColor(R.color.black))
+                switchList.isChecked = false
+                tvTotal.setTextColor(getColor(R.color.teal_200))
+                changeAdapter(switchList.isChecked)
+            }
+
+            tvFavourite.setOnClickListener {
+                tvTotal.setTextColor(getColor(R.color.black))
+                switchList.isChecked = true
+                tvFavourite.setTextColor(getColor(R.color.teal_200))
+                changeAdapter(switchList.isChecked)
+            }
+
+            switchList.setOnCheckedChangeListener { compoundButton, isChecked ->
+                if (isChecked) {
+                    tvFavourite.setTextColor(getColor(R.color.teal_200))
+                    tvTotal.setTextColor(getColor(R.color.black))
+                } else {
+                    tvTotal.setTextColor(getColor(R.color.teal_200))
+                    tvFavourite.setTextColor(getColor(R.color.black))
+                }
+                changeAdapter(isChecked)
+            }
+        }
+    }
+
+    private fun observeViewModel() {
         viewModel.coinInfoList.observe(this) {
             coinInfoAdapter.submitList(it)
         }
@@ -40,26 +71,9 @@ class CoinPriceListActivity : AppCompatActivity() {
         viewModel.coinFavouriteInfoList.observe(this) {
             coinFavouriteInfoAdapter.submitList(it)
         }
-
-        binding.tvFavourite.setOnClickListener {
-
-        }
-
-        binding.switchList.isChecked = false
-        binding.switchList.setOnCheckedChangeListener { compoundButton, isChecked ->
-            changeAdapter(isChecked)
-        }
     }
 
-    private fun changeAdapter(isChecked: Boolean) {
-        if (isChecked) {
-            binding.rvCoinPriceList.adapter = coinFavouriteInfoAdapter
-        } else {
-            binding.rvCoinPriceList.adapter = coinInfoAdapter
-        }
-    }
-
-    private fun setClickListeners(
+    private fun setAdaptersClickListeners(
         adapter: CoinInfoAdapter,
         favouriteAdapter: CoinFavouriteInfoAdapter
     ) {
@@ -100,6 +114,14 @@ class CoinPriceListActivity : AppCompatActivity() {
                     ).show()
                 }
             }
+    }
+
+    private fun changeAdapter(isChecked: Boolean) {
+        if (isChecked) {
+            binding.rvCoinPriceList.adapter = coinFavouriteInfoAdapter
+        } else {
+            binding.rvCoinPriceList.adapter = coinInfoAdapter
+        }
     }
 
     private fun launchDetailActivity(fromSymbol: String) {
