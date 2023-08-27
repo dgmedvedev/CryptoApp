@@ -94,18 +94,41 @@ class CoinMapper {
         }
     }
 
+    fun mapCoinToCoinFavouriteDbModel(coin: CoinInfo) = CoinFavouriteInfoDbModel(
+        fromSymbol = coin.fromSymbol,
+        toSymbol = coin.toSymbol,
+        price = coin.price,
+        lastUpdate = convertTimeToTimestamp(coin.lastUpdate),
+        highDay = coin.highDay,
+        lowDay = coin.lowDay,
+        lastMarket = coin.lastMarket,
+        imageUrl = coin.imageUrl
+    )
+
     fun mapNamesListToString(namesListDto: CoinNamesListDto): String {
         return namesListDto.names?.map { it.coinNameDto?.name }?.joinToString(",") ?: ""
+    }
+
+    fun mapNamesListToString(namesList: List<String>): String {
+        return namesList.joinToString(",")
     }
 
     private fun convertTimestampToTime(timestamp: Long?): String {
         if (timestamp == null) return ""
         val stamp = Timestamp(timestamp * 1000)
         val date = Date(stamp.time)
-        val pattern = "HH:mm:ss"
+        val pattern = "yyyy-MM-dd HH:mm:ss"
         val sdf = SimpleDateFormat(pattern, Locale.getDefault())
         sdf.timeZone = TimeZone.getDefault()
         return sdf.format(date)
+    }
+
+    private fun convertTimeToTimestamp(time: String): Long? {
+        val sdf = SimpleDateFormat(time, Locale.getDefault())
+        sdf.timeZone = TimeZone.getDefault()
+        val timestamp = sdf.parse(time)?.time
+        timestamp?.let { timestamp / 1000 }
+        return timestamp
     }
 
     companion object {

@@ -16,6 +16,9 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
     private val loadDataUseCase = LoadDataUseCase(repository)
     private val stopAllWorkersUseCase = StopAllWorkersUseCase(repository)
 
+    private val insertCoinFavouriteInfoUseCase = InsertCoinFavouriteInfoUseCase(repository)
+    private val deleteCoinFavouriteInfoUseCase = DeleteCoinFavouriteInfoUseCase(repository)
+
     val coinInfoList = getCoinInfoListUseCase()
     val coinFavouriteInfoList = getCoinFavouriteInfoListUseCase()
 
@@ -29,4 +32,10 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
     init {
         loadDataUseCase()
     }
+
+    suspend fun insertCoinFavouriteInfo(coinInfo: CoinInfo) =
+        insertCoinFavouriteInfoUseCase(coinInfo)
+
+    suspend fun deleteCoinFavouriteInfo(coinFavouriteInfo: CoinFavouriteInfo) =
+        deleteCoinFavouriteInfoUseCase(coinFavouriteInfo)
 }

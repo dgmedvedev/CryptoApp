@@ -1,6 +1,7 @@
 package com.demo.cryptoapp.data.workers
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
@@ -23,7 +24,9 @@ class RefreshDataWorker(
         while (true) {
             try {
                 val topCoins = apiService.getTopCoinsInfo(limit = 50)
+                val favouriteCoinsNamesList = coinInfoDao.getCoinsFavouriteNamesList()
                 val fSyms = mapper.mapNamesListToString(topCoins)
+                val fSymsFavourite = mapper.mapNamesListToString(favouriteCoinsNamesList)
                 val jsonContainer = apiService.getFullPriceList(fSyms = fSyms)
                 val jsonContainerFavourite = apiService.getFullPriceList(fSyms = fSymsFavourite)
                 val coinInfoDtoList = mapper.mapJsonContainerToListCoinInfo(jsonContainer)
@@ -44,8 +47,6 @@ class RefreshDataWorker(
     companion object {
 
         const val NAME = "RefreshDataWorker"
-
-        var fSymsFavourite: String = "XRP"
 
         fun makeRequest(): OneTimeWorkRequest {
             return OneTimeWorkRequestBuilder<RefreshDataWorker>().build()

@@ -12,6 +12,10 @@ interface CoinRepository {
 
     fun getCoinFavouriteInfo(fromSymbol: String): LiveData<CoinFavouriteInfo>
 
+    suspend fun insertCoinFavouriteInfo(coinInfo: CoinInfo)
+
+    suspend fun deleteCoinFavouriteInfo(coinFavouriteInfo: CoinFavouriteInfo)
+
     fun loadData()
 
     fun stopAllWorkers()

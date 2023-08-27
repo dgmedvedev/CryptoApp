@@ -55,6 +55,15 @@ class CoinRepositoryImpl(
         }
     }
 
+    override suspend fun insertCoinFavouriteInfo(coinInfo: CoinInfo) {
+        val coinFovourite = mapper.mapCoinToCoinFavouriteDbModel(coinInfo)
+        coinInfoDao.insertCoinFavourite(coinFovourite)
+    }
+
+    override suspend fun deleteCoinFavouriteInfo(coinFavouriteInfo: CoinFavouriteInfo) {
+        coinInfoDao.deleteCoinFavourite(coinFavouriteInfo.fromSymbol)
+    }
+
     override fun loadData() {
         workManager.enqueueUniqueWork(
             RefreshDataWorker.NAME,

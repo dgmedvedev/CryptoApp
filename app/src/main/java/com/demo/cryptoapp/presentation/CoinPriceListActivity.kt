@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.demo.cryptoapp.R
 import com.demo.cryptoapp.databinding.ActivityCoinPriceListBinding
 import com.demo.cryptoapp.domain.CoinFavouriteInfo
 import com.demo.cryptoapp.domain.CoinInfo
 import com.demo.cryptoapp.presentation.adapters.CoinFavouriteInfoAdapter
 import com.demo.cryptoapp.presentation.adapters.CoinInfoAdapter
+import kotlinx.coroutines.launch
 
 class CoinPriceListActivity : AppCompatActivity() {
 
@@ -37,6 +39,12 @@ class CoinPriceListActivity : AppCompatActivity() {
             tvTotal.setTextColor(getColor(R.color.teal_200))
 
             tvTotal.setOnClickListener {
+                viewModel.stopAllWorkers()
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.background_update_disabled),
+                    Toast.LENGTH_SHORT
+                ).show()
                 tvFavourite.setTextColor(getColor(R.color.black))
                 switchList.isChecked = false
                 tvTotal.setTextColor(getColor(R.color.teal_200))
@@ -87,12 +95,14 @@ class CoinPriceListActivity : AppCompatActivity() {
             }
 
             override fun onCoinLongClick(coinInfo: CoinInfo) {
-                viewModel.stopAllWorkers()
-                Toast.makeText(
-                    applicationContext,
-                    getString(R.string.background_update_disabled),
-                    Toast.LENGTH_SHORT
-                ).show()
+                lifecycleScope.launch {
+                    viewModel.insertCoinFavouriteInfo(coinInfo)
+                    Toast.makeText(
+                        applicationContext,
+                        "${coinInfo.fromSymbol} добавлен в избранное",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
         favouriteAdapter.onCoinClickListener =
@@ -106,12 +116,9 @@ class CoinPriceListActivity : AppCompatActivity() {
                 }
 
                 override fun onCoinLongClick(coinFavouriteInfo: CoinFavouriteInfo) {
-                    viewModel.stopAllWorkers()
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.background_update_disabled),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    lifecycleScope.launch {
+                        viewModel.deleteCoinFavouriteInfo(coinFavouriteInfo)
+                    }
                 }
             }
     }
