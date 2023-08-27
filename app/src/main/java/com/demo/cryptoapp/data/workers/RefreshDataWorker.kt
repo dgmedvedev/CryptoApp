@@ -23,11 +23,20 @@ class RefreshDataWorker(
         while (true) {
             try {
                 val topCoins = apiService.getTopCoinsInfo(limit = 50)
+                val favouriteCoinsNamesList = coinInfoDao.getCoinsFavouriteNamesList()
                 val fSyms = mapper.mapNamesListToString(topCoins)
+                val fSymsFavourite = mapper.mapNamesListToString(favouriteCoinsNamesList)
                 val jsonContainer = apiService.getFullPriceList(fSyms = fSyms)
+                val jsonContainerFavourite = apiService.getFullPriceList(fSyms = fSymsFavourite)
                 val coinInfoDtoList = mapper.mapJsonContainerToListCoinInfo(jsonContainer)
+                val coinInfoDtoFavouriteList =
+                    mapper.mapJsonContainerToListCoinInfo(jsonContainerFavourite)
                 val dbModelList = coinInfoDtoList.map { mapper.mapDtoToDbModel(it) }
+                val favouriteDbModelList = coinInfoDtoFavouriteList
+                    .map { mapper.mapDtoToDbModel(it) }
+                    .map { mapper.mapDbModelToFavouriteDbModel(it) }
                 coinInfoDao.insertPriceList(dbModelList)
+                coinInfoDao.insertPriceFavouriteList(favouriteDbModelList)
             } catch (e: Exception) {
             }
             delay(10000)

@@ -4,14 +4,20 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.demo.cryptoapp.R
 import com.demo.cryptoapp.databinding.ActivityCoinPriceListBinding
+import com.demo.cryptoapp.domain.CoinFavouriteInfo
 import com.demo.cryptoapp.domain.CoinInfo
+import com.demo.cryptoapp.presentation.adapters.CoinFavouriteInfoAdapter
 import com.demo.cryptoapp.presentation.adapters.CoinInfoAdapter
+import kotlinx.coroutines.launch
 
 class CoinPriceListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCoinPriceListBinding
+    private lateinit var coinInfoAdapter: CoinInfoAdapter
+    private lateinit var coinFavouriteInfoAdapter: CoinFavouriteInfoAdapter
 
     private val viewModel: CoinViewModel by lazy {
         ViewModelProvider(this)[CoinViewModel::class.java]
@@ -21,7 +27,63 @@ class CoinPriceListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCoinPriceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val adapter = CoinInfoAdapter(this)
+        coinInfoAdapter = CoinInfoAdapter(this)
+        coinFavouriteInfoAdapter = CoinFavouriteInfoAdapter(this)
+
+        observeViewModel()
+        setAdaptersClickListeners(coinInfoAdapter, coinFavouriteInfoAdapter)
+
+        with(binding) {
+            rvCoinPriceList.adapter = coinInfoAdapter
+            tvTotal.setTextColor(getColor(R.color.teal_200))
+
+            tvTotal.setOnClickListener {
+                viewModel.stopAllWorkers()
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.background_update_disabled),
+                    Toast.LENGTH_SHORT
+                ).show()
+                tvFavourite.setTextColor(getColor(R.color.black))
+                switchList.isChecked = false
+                tvTotal.setTextColor(getColor(R.color.teal_200))
+                changeAdapter(switchList.isChecked)
+            }
+
+            tvFavourite.setOnClickListener {
+                tvTotal.setTextColor(getColor(R.color.black))
+                switchList.isChecked = true
+                tvFavourite.setTextColor(getColor(R.color.teal_200))
+                changeAdapter(switchList.isChecked)
+            }
+
+            switchList.setOnCheckedChangeListener { compoundButton, isChecked ->
+                if (isChecked) {
+                    tvFavourite.setTextColor(getColor(R.color.teal_200))
+                    tvTotal.setTextColor(getColor(R.color.black))
+                } else {
+                    tvTotal.setTextColor(getColor(R.color.teal_200))
+                    tvFavourite.setTextColor(getColor(R.color.black))
+                }
+                changeAdapter(isChecked)
+            }
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.coinInfoList.observe(this) {
+            coinInfoAdapter.submitList(it)
+        }
+
+        viewModel.coinFavouriteInfoList.observe(this) {
+            coinFavouriteInfoAdapter.submitList(it)
+        }
+    }
+
+    private fun setAdaptersClickListeners(
+        adapter: CoinInfoAdapter,
+        favouriteAdapter: CoinFavouriteInfoAdapter
+    ) {
         adapter.onCoinClickListener = object : CoinInfoAdapter.OnCoinClickListener {
             override fun onCoinClick(coinInfo: CoinInfo) {
                 if (binding.fragmentContainer == null) {
@@ -32,19 +94,42 @@ class CoinPriceListActivity : AppCompatActivity() {
             }
 
             override fun onCoinLongClick(coinInfo: CoinInfo) {
-                viewModel.stopAllWorkers()
-                Toast.makeText(
-                    applicationContext,
-                    getString(R.string.background_update_disabled),
-                    Toast.LENGTH_SHORT
-                ).show()
+                lifecycleScope.launch {
+                    viewModel.insertCoinFavouriteInfo(coinInfo)
+                    Toast.makeText(
+                        applicationContext,
+                        String.format(
+                            getString(R.string.add_coin_favourite_to_list),
+                            coinInfo.fromSymbol
+                        ),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
-        binding.rvCoinPriceList.adapter = adapter
-        binding.rvCoinPriceList.itemAnimator = null
+        favouriteAdapter.onCoinClickListener =
+            object : CoinFavouriteInfoAdapter.OnCoinClickListener {
+                override fun onCoinClick(coinFavouriteInfo: CoinFavouriteInfo) {
+                    if (binding.fragmentContainer == null) {
+                        launchDetailActivity(coinFavouriteInfo.fromSymbol)
+                    } else {
+                        launchDetailFragment(coinFavouriteInfo.fromSymbol)
+                    }
+                }
 
-        viewModel.coinInfoList.observe(this) {
-            adapter.submitList(it)
+                override fun onCoinLongClick(coinFavouriteInfo: CoinFavouriteInfo) {
+                    lifecycleScope.launch {
+                        viewModel.deleteCoinFavouriteInfo(coinFavouriteInfo)
+                    }
+                }
+            }
+    }
+
+    private fun changeAdapter(isChecked: Boolean) {
+        if (isChecked) {
+            binding.rvCoinPriceList.adapter = coinFavouriteInfoAdapter
+        } else {
+            binding.rvCoinPriceList.adapter = coinInfoAdapter
         }
     }
 

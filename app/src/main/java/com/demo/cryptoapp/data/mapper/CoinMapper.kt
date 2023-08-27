@@ -1,9 +1,11 @@
 package com.demo.cryptoapp.data.mapper
 
+import com.demo.cryptoapp.data.database.CoinFavouriteInfoDbModel
 import com.demo.cryptoapp.data.database.CoinInfoDbModel
 import com.demo.cryptoapp.data.network.model.CoinInfoDto
 import com.demo.cryptoapp.data.network.model.CoinInfoJsonContainerDto
 import com.demo.cryptoapp.data.network.model.CoinNamesListDto
+import com.demo.cryptoapp.domain.CoinFavouriteInfo
 import com.demo.cryptoapp.domain.CoinInfo
 import com.google.gson.Gson
 import java.sql.Timestamp
@@ -11,16 +13,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CoinMapper {
-    fun mapDtoToDbModel(dto: CoinInfoDto) = CoinInfoDbModel(
-        fromSymbol = dto.fromSymbol,
-        toSymbol = dto.toSymbol,
-        price = dto.price,
-        lastUpdate = dto.lastUpdate,
-        highDay = dto.highDay,
-        lowDay = dto.lowDay,
-        lastMarket = dto.lastMarket,
-        imageUrl = BASE_IMAGE_URL + dto.imageUrl
-    )
 
     fun mapJsonContainerToListCoinInfo(jsonContainer: CoinInfoJsonContainerDto): List<CoinInfoDto> {
         val result = mutableListOf<CoinInfoDto>()
@@ -40,25 +32,85 @@ class CoinMapper {
         return result
     }
 
-    fun mapNamesListToString(namesListDto: CoinNamesListDto): String {
-        return namesListDto.names?.map { it.coinNameDto?.name }?.joinToString(",") ?: ""
-    }
+    fun mapDtoToDbModel(dto: CoinInfoDto) = CoinInfoDbModel(
+        fromSymbol = dto.fromSymbol,
+        toSymbol = dto.toSymbol,
+        price = dto.price,
+        lastUpdate = convertTimestampToTime(dto.lastUpdate),
+        highDay = dto.highDay,
+        lowDay = dto.lowDay,
+        lastMarket = dto.lastMarket,
+        imageUrl = BASE_IMAGE_URL + dto.imageUrl
+    )
 
-    fun mapDbModelToEntity(dbModel: CoinInfoDbModel) = CoinInfo(
+    fun mapDbModelToFavouriteDbModel(dbModel: CoinInfoDbModel) = CoinFavouriteInfoDbModel(
         fromSymbol = dbModel.fromSymbol,
         toSymbol = dbModel.toSymbol,
         price = dbModel.price,
-        lastUpdate = convertTimestampToTime(dbModel.lastUpdate),
+        lastUpdate = dbModel.lastUpdate,
         highDay = dbModel.highDay,
         lowDay = dbModel.lowDay,
         lastMarket = dbModel.lastMarket,
         imageUrl = dbModel.imageUrl
     )
 
-    fun mapListDbModelToListEntities(listDbModel: List<CoinInfoDbModel>): List<CoinInfo> {
+    fun mapDbModelToEntity(dbModel: CoinInfoDbModel) = CoinInfo(
+        fromSymbol = dbModel.fromSymbol,
+        toSymbol = dbModel.toSymbol,
+        price = dbModel.price,
+        lastUpdate = dbModel.lastUpdate,
+        highDay = dbModel.highDay,
+        lowDay = dbModel.lowDay,
+        lastMarket = dbModel.lastMarket,
+        imageUrl = dbModel.imageUrl
+    )
+
+    fun mapFavouriteDbModelToFavouriteEntity(
+        favouriteDbModel: CoinFavouriteInfoDbModel
+    ) = CoinFavouriteInfo(
+        fromSymbol = favouriteDbModel.fromSymbol,
+        toSymbol = favouriteDbModel.toSymbol,
+        price = favouriteDbModel.price,
+        lastUpdate = favouriteDbModel.lastUpdate,
+        highDay = favouriteDbModel.highDay,
+        lowDay = favouriteDbModel.lowDay,
+        lastMarket = favouriteDbModel.lastMarket,
+        imageUrl = favouriteDbModel.imageUrl
+    )
+
+    fun mapListDbModelToListEntities(
+        listDbModel: List<CoinInfoDbModel>
+    ): List<CoinInfo> {
         return listDbModel.map {
             mapDbModelToEntity(it)
         }
+    }
+
+    fun mapFavouriteListDbModelToFavouriteListEntities(
+        favouriteListDbModel: List<CoinFavouriteInfoDbModel>
+    ): List<CoinFavouriteInfo> {
+        return favouriteListDbModel.map {
+            mapFavouriteDbModelToFavouriteEntity(it)
+        }
+    }
+
+    fun mapCoinToCoinFavouriteDbModel(coin: CoinInfo) = CoinFavouriteInfoDbModel(
+        fromSymbol = coin.fromSymbol,
+        toSymbol = coin.toSymbol,
+        price = coin.price,
+        lastUpdate = coin.lastUpdate,
+        highDay = coin.highDay,
+        lowDay = coin.lowDay,
+        lastMarket = coin.lastMarket,
+        imageUrl = coin.imageUrl
+    )
+
+    fun mapNamesListToString(namesListDto: CoinNamesListDto): String {
+        return namesListDto.names?.map { it.coinNameDto?.name }?.joinToString(",") ?: ""
+    }
+
+    fun mapNamesListToString(namesList: List<String>): String {
+        return namesList.joinToString(",")
     }
 
     private fun convertTimestampToTime(timestamp: Long?): String {

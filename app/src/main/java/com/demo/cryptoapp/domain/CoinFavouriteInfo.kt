@@ -1,11 +1,6 @@
-package com.demo.cryptoapp.data.database
+package com.demo.cryptoapp.domain
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "full_price_list")
-data class CoinInfoDbModel(
-    @PrimaryKey
+data class CoinFavouriteInfo(
     val fromSymbol: String,
     val toSymbol: String?,
     val price: Double?,
