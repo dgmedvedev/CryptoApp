@@ -12,4 +12,5 @@
     <string name="background_update_disabled">Фоновое обновление отключено</string>
     <string name="total">Total</string>
     <string name="favourite">Favourite</string>
+    <string name="add_coin_favourite_to_list">%s добавлен в избранное</string>
 </resources>

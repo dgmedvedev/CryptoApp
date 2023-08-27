@@ -36,7 +36,7 @@ class CoinMapper {
         fromSymbol = dto.fromSymbol,
         toSymbol = dto.toSymbol,
         price = dto.price,
-        lastUpdate = dto.lastUpdate,
+        lastUpdate = convertTimestampToTime(dto.lastUpdate),
         highDay = dto.highDay,
         lowDay = dto.lowDay,
         lastMarket = dto.lastMarket,
@@ -58,7 +58,7 @@ class CoinMapper {
         fromSymbol = dbModel.fromSymbol,
         toSymbol = dbModel.toSymbol,
         price = dbModel.price,
-        lastUpdate = convertTimestampToTime(dbModel.lastUpdate),
+        lastUpdate = dbModel.lastUpdate,
         highDay = dbModel.highDay,
         lowDay = dbModel.lowDay,
         lastMarket = dbModel.lastMarket,
@@ -71,7 +71,7 @@ class CoinMapper {
         fromSymbol = favouriteDbModel.fromSymbol,
         toSymbol = favouriteDbModel.toSymbol,
         price = favouriteDbModel.price,
-        lastUpdate = convertTimestampToTime(favouriteDbModel.lastUpdate),
+        lastUpdate = favouriteDbModel.lastUpdate,
         highDay = favouriteDbModel.highDay,
         lowDay = favouriteDbModel.lowDay,
         lastMarket = favouriteDbModel.lastMarket,
@@ -98,7 +98,7 @@ class CoinMapper {
         fromSymbol = coin.fromSymbol,
         toSymbol = coin.toSymbol,
         price = coin.price,
-        lastUpdate = convertTimeToTimestamp(coin.lastUpdate),
+        lastUpdate = coin.lastUpdate,
         highDay = coin.highDay,
         lowDay = coin.lowDay,
         lastMarket = coin.lastMarket,
@@ -117,18 +117,10 @@ class CoinMapper {
         if (timestamp == null) return ""
         val stamp = Timestamp(timestamp * 1000)
         val date = Date(stamp.time)
-        val pattern = "yyyy-MM-dd HH:mm:ss"
+        val pattern = "HH:mm:ss"
         val sdf = SimpleDateFormat(pattern, Locale.getDefault())
         sdf.timeZone = TimeZone.getDefault()
         return sdf.format(date)
-    }
-
-    private fun convertTimeToTimestamp(time: String): Long? {
-        val sdf = SimpleDateFormat(time, Locale.getDefault())
-        sdf.timeZone = TimeZone.getDefault()
-        val timestamp = sdf.parse(time)?.time
-        timestamp?.let { timestamp / 1000 }
-        return timestamp
     }
 
     companion object {

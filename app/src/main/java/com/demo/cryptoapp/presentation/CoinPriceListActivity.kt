@@ -35,7 +35,6 @@ class CoinPriceListActivity : AppCompatActivity() {
 
         with(binding) {
             rvCoinPriceList.adapter = coinInfoAdapter
-            rvCoinPriceList.itemAnimator = null
             tvTotal.setTextColor(getColor(R.color.teal_200))
 
             tvTotal.setOnClickListener {
@@ -99,7 +98,10 @@ class CoinPriceListActivity : AppCompatActivity() {
                     viewModel.insertCoinFavouriteInfo(coinInfo)
                     Toast.makeText(
                         applicationContext,
-                        "${coinInfo.fromSymbol} добавлен в избранное",
+                        String.format(
+                            getString(R.string.add_coin_favourite_to_list),
+                            coinInfo.fromSymbol
+                        ),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

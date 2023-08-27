@@ -47,14 +47,6 @@ class CoinRepositoryImpl(
         }
     }
 
-    override fun getCoinFavouriteInfo(fromSymbol: String): LiveData<CoinFavouriteInfo> {
-        return MediatorLiveData<CoinFavouriteInfo>().apply {
-            addSource(coinInfoDao.getPriceInfoAboutCoinFavourite(fromSymbol)) {
-                value = mapper.mapFavouriteDbModelToFavouriteEntity(it)
-            }
-        }
-    }
-
     override suspend fun insertCoinFavouriteInfo(coinInfo: CoinInfo) {
         val coinFovourite = mapper.mapCoinToCoinFavouriteDbModel(coinInfo)
         coinInfoDao.insertCoinFavourite(coinFovourite)
