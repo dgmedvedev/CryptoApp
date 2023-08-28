@@ -1,5 +1,7 @@
 package com.demo.cryptoapp.presentation.adapters
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ class CoinInfoAdapter(private val context: Context) :
     ListAdapter<CoinInfo, CoinInfoViewHolder>(CoinInfoDiffCallback()) {
 
     var onCoinClickListener: OnCoinClickListener? = null
+    lateinit var options: ActivityOptions
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinInfoViewHolder {
         val binding = ItemCoinInfoBinding.inflate(
@@ -38,6 +41,11 @@ class CoinInfoAdapter(private val context: Context) :
                 String.format(lastUpdateTemplate, coin.lastUpdate)
             Picasso.get().load(coin.imageUrl).into(ivLogoCoin)
             root.setOnClickListener {
+                options = ActivityOptions.makeSceneTransitionAnimation(
+                    context as Activity,
+                    ivLogoCoin,
+                    "logo"
+                )
                 onCoinClickListener?.onCoinClick(coin)
             }
             root.setOnLongClickListener {

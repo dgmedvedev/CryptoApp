@@ -111,7 +111,7 @@ class CoinPriceListActivity : AppCompatActivity() {
             object : CoinFavouriteInfoAdapter.OnCoinClickListener {
                 override fun onCoinClick(coinFavouriteInfo: CoinFavouriteInfo) {
                     if (binding.fragmentContainer == null) {
-                        launchDetailActivity(coinFavouriteInfo.fromSymbol)
+                        launchFavouriteDetailActivity(coinFavouriteInfo.fromSymbol)
                     } else {
                         launchDetailFragment(coinFavouriteInfo.fromSymbol)
                     }
@@ -138,7 +138,15 @@ class CoinPriceListActivity : AppCompatActivity() {
             this@CoinPriceListActivity,
             fromSymbol
         )
-        startActivity(intent)
+        startActivity(intent, coinInfoAdapter.options.toBundle())
+    }
+
+    private fun launchFavouriteDetailActivity(fromSymbol: String) {
+        val intent = CoinDetailActivity.newIntent(
+            this@CoinPriceListActivity,
+            fromSymbol
+        )
+        startActivity(intent, coinFavouriteInfoAdapter.options.toBundle())
     }
 
     private fun launchDetailFragment(fromSymbol: String) {
