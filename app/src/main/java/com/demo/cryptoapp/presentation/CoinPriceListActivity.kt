@@ -15,9 +15,12 @@ import kotlinx.coroutines.launch
 
 class CoinPriceListActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityCoinPriceListBinding
     private lateinit var coinInfoAdapter: CoinInfoAdapter
     private lateinit var coinFavouriteInfoAdapter: CoinFavouriteInfoAdapter
+
+    private val binding: ActivityCoinPriceListBinding by lazy {
+        ActivityCoinPriceListBinding.inflate(layoutInflater)
+    }
 
     private val viewModel: CoinViewModel by lazy {
         ViewModelProvider(this)[CoinViewModel::class.java]
@@ -25,18 +28,72 @@ class CoinPriceListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCoinPriceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         coinInfoAdapter = CoinInfoAdapter(this)
         coinFavouriteInfoAdapter = CoinFavouriteInfoAdapter(this)
 
         observeViewModel()
         setAdaptersClickListeners(coinInfoAdapter, coinFavouriteInfoAdapter)
+        setViewsListeners()
 
         with(binding) {
             rvCoinPriceList.adapter = coinInfoAdapter
             tvTotal.setTextColor(getColor(R.color.teal_200))
+        }
+    }
 
+    private fun observeViewModel() {
+        viewModel.coinInfoList.observe(this) {
+            coinInfoAdapter.submitList(it)
+        }
+
+        viewModel.coinFavouriteInfoList.observe(this) {
+            coinFavouriteInfoAdapter.submitList(it)
+        }
+    }
+
+    private fun setAdaptersClickListeners(
+        adapter: CoinInfoAdapter,
+        favouriteAdapter: CoinFavouriteInfoAdapter
+    ) {
+        adapter.onCoinClickListener = object : CoinInfoAdapter.OnCoinClickListener {
+            override fun onCoinClick(coinInfo: CoinInfo) {
+                if (binding.fragmentContainer == null) {
+                    launchDetailActivity(coinInfo.fromSymbol, adapter.options.toBundle())
+                } else {
+                    launchDetailFragment(coinInfo.fromSymbol)
+                }
+            }
+
+            override fun onCoinLongClick(coinInfo: CoinInfo) {
+                lifecycleScope.launch {
+                    viewModel.insertCoinFavouriteInfo(coinInfo)
+                }
+            }
+        }
+        favouriteAdapter.onCoinClickListener =
+            object : CoinFavouriteInfoAdapter.OnCoinClickListener {
+                override fun onCoinClick(coinFavouriteInfo: CoinFavouriteInfo) {
+                    if (binding.fragmentContainer == null) {
+                        launchDetailActivity(
+                            coinFavouriteInfo.fromSymbol,
+                            favouriteAdapter.options.toBundle()
+                        )
+                    } else {
+                        launchDetailFragment(coinFavouriteInfo.fromSymbol)
+                    }
+                }
+
+                override fun onCoinLongClick(coinFavouriteInfo: CoinFavouriteInfo) {
+                    lifecycleScope.launch {
+                        viewModel.deleteCoinFavouriteInfo(coinFavouriteInfo)
+                    }
+                }
+            }
+    }
+
+    private fun setViewsListeners() {
+        with(binding) {
             tvTotal.setOnClickListener {
                 viewModel.stopAllWorkers()
                 Toast.makeText(
@@ -70,61 +127,6 @@ class CoinPriceListActivity : AppCompatActivity() {
         }
     }
 
-    private fun observeViewModel() {
-        viewModel.coinInfoList.observe(this) {
-            coinInfoAdapter.submitList(it)
-        }
-
-        viewModel.coinFavouriteInfoList.observe(this) {
-            coinFavouriteInfoAdapter.submitList(it)
-        }
-    }
-
-    private fun setAdaptersClickListeners(
-        adapter: CoinInfoAdapter,
-        favouriteAdapter: CoinFavouriteInfoAdapter
-    ) {
-        adapter.onCoinClickListener = object : CoinInfoAdapter.OnCoinClickListener {
-            override fun onCoinClick(coinInfo: CoinInfo) {
-                if (binding.fragmentContainer == null) {
-                    launchDetailActivity(coinInfo.fromSymbol)
-                } else {
-                    launchDetailFragment(coinInfo.fromSymbol)
-                }
-            }
-
-            override fun onCoinLongClick(coinInfo: CoinInfo) {
-                lifecycleScope.launch {
-                    viewModel.insertCoinFavouriteInfo(coinInfo)
-                    Toast.makeText(
-                        applicationContext,
-                        String.format(
-                            getString(R.string.add_coin_favourite_to_list),
-                            coinInfo.fromSymbol
-                        ),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
-        favouriteAdapter.onCoinClickListener =
-            object : CoinFavouriteInfoAdapter.OnCoinClickListener {
-                override fun onCoinClick(coinFavouriteInfo: CoinFavouriteInfo) {
-                    if (binding.fragmentContainer == null) {
-                        launchFavouriteDetailActivity(coinFavouriteInfo.fromSymbol)
-                    } else {
-                        launchDetailFragment(coinFavouriteInfo.fromSymbol)
-                    }
-                }
-
-                override fun onCoinLongClick(coinFavouriteInfo: CoinFavouriteInfo) {
-                    lifecycleScope.launch {
-                        viewModel.deleteCoinFavouriteInfo(coinFavouriteInfo)
-                    }
-                }
-            }
-    }
-
     private fun changeAdapter(isChecked: Boolean) {
         if (isChecked) {
             binding.rvCoinPriceList.adapter = coinFavouriteInfoAdapter
@@ -133,20 +135,12 @@ class CoinPriceListActivity : AppCompatActivity() {
         }
     }
 
-    private fun launchDetailActivity(fromSymbol: String) {
+    private fun launchDetailActivity(fromSymbol: String, options: Bundle?) {
         val intent = CoinDetailActivity.newIntent(
             this@CoinPriceListActivity,
             fromSymbol
         )
-        startActivity(intent, coinInfoAdapter.options.toBundle())
-    }
-
-    private fun launchFavouriteDetailActivity(fromSymbol: String) {
-        val intent = CoinDetailActivity.newIntent(
-            this@CoinPriceListActivity,
-            fromSymbol
-        )
-        startActivity(intent, coinFavouriteInfoAdapter.options.toBundle())
+        startActivity(intent, options)
     }
 
     private fun launchDetailFragment(fromSymbol: String) {

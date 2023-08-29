@@ -13,4 +13,5 @@
     <string name="total">Total</string>
     <string name="favourite">Favourite</string>
     <string name="add_coin_favourite_to_list">%s добавлен в избранное</string>
+    <string name="logo">logo</string>
 </resources>

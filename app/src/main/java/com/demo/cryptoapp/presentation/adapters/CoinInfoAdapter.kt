@@ -5,6 +5,7 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.ListAdapter
 import com.demo.cryptoapp.R
 import com.demo.cryptoapp.databinding.ItemCoinInfoBinding
@@ -44,11 +45,19 @@ class CoinInfoAdapter(private val context: Context) :
                 options = ActivityOptions.makeSceneTransitionAnimation(
                     context as Activity,
                     ivLogoCoin,
-                    "logo"
+                    context.getString(R.string.logo)
                 )
                 onCoinClickListener?.onCoinClick(coin)
             }
             root.setOnLongClickListener {
+                Toast.makeText(
+                    context,
+                    String.format(
+                        context.getString(R.string.add_coin_favourite_to_list),
+                        coin.fromSymbol
+                    ),
+                    Toast.LENGTH_SHORT
+                ).show()
                 onCoinClickListener?.onCoinLongClick(coin)
                 true
             }
