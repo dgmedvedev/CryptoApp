@@ -141,6 +141,7 @@ class CoinPriceListActivity : AppCompatActivity() {
             fromSymbol
         )
         startActivity(intent, options)
+        //overridePendingTransition(R.anim.slide_out_bottom, R.anim.slide_in_bottom)
     }
 
     private fun launchDetailFragment(fromSymbol: String) {

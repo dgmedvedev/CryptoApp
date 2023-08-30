@@ -45,7 +45,7 @@ class CoinInfoAdapter(private val context: Context) :
                 options = ActivityOptions.makeSceneTransitionAnimation(
                     context as Activity,
                     ivLogoCoin,
-                    context.getString(R.string.logo)
+                    context.getString(R.string.transition_name_logo)
                 )
                 onCoinClickListener?.onCoinClick(coin)
             }
