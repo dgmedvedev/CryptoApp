@@ -2,7 +2,10 @@ package com.demo.cryptoapp.presentation
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.Transition
 import androidx.appcompat.app.AppCompatActivity
 import com.demo.cryptoapp.R
 import com.demo.cryptoapp.databinding.ActivityCoinDetailBinding
@@ -16,6 +19,8 @@ class CoinDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        fixFlickeringOnTransition()
+
         if (!intent.hasExtra(EXTRA_FROM_SYMBOL)) {
             finish()
             return
@@ -26,6 +31,16 @@ class CoinDetailActivity : AppCompatActivity() {
                 .beginTransaction()
                 .replace(R.id.fragment_container, CoinDetailFragment.newInstance(fromSymbol))
                 .commit()
+        }
+    }
+
+    private fun fixFlickeringOnTransition() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val fade: Transition = Fade()
+            fade.excludeTarget(android.R.id.statusBarBackground, true)
+            fade.excludeTarget(android.R.id.navigationBarBackground, true)
+            window.enterTransition = fade
+            window.exitTransition = fade
         }
     }
 

@@ -36,10 +36,8 @@ class CoinPriceListActivity : AppCompatActivity() {
         setAdaptersClickListeners(coinInfoAdapter, coinFavouriteInfoAdapter)
         setViewsListeners()
 
-        with(binding) {
-            rvCoinPriceList.adapter = coinInfoAdapter
-            tvTotal.setTextColor(getColor(R.color.teal_200))
-        }
+        binding.rvCoinPriceList.adapter = coinInfoAdapter
+        binding.tvTotal.setTextColor(getColor(R.color.teal_200))
     }
 
     private fun observeViewModel() {
@@ -141,7 +139,6 @@ class CoinPriceListActivity : AppCompatActivity() {
             fromSymbol
         )
         startActivity(intent, options)
-        //overridePendingTransition(R.anim.slide_out_bottom, R.anim.slide_in_bottom)
     }
 
     private fun launchDetailFragment(fromSymbol: String) {
