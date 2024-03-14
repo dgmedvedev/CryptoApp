@@ -11,7 +11,7 @@ Dmitry Medvedev
 * Retrofit 2
 * JSON
 * View Binding
-* Fragments (Single Activity)
+* Fragments
 
 ## Contact information
 * https://www.linkedin.com/in/dg-medvedev
