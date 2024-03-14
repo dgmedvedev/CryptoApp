@@ -8,6 +8,7 @@ Dmitry Medvedev
 * Coroutines
 * MVVM
 * LiveData
+* WorkManager
 * Retrofit 2
 * JSON
 * View Binding
