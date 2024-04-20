@@ -1,4 +1,4 @@
-package com.demo.cryptoapp.data.database
+package com.demo.cryptoapp.data.database.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

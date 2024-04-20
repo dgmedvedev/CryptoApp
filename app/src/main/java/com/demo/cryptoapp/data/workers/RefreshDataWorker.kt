@@ -17,7 +17,7 @@ class RefreshDataWorker(
 
     private val coinInfoDao = AppDatabase.getInstance(context).coinInfoDao()
     private val apiService = ApiFactory.apiService
-    private val mapper = CoinMapper()
+    private val mapper = CoinMapper
 
     override suspend fun doWork(): Result {
         while (true) {

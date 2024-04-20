@@ -1,18 +1,25 @@
 package com.demo.cryptoapp.data.mapper
 
-import com.demo.cryptoapp.data.database.CoinFavouriteInfoDbModel
-import com.demo.cryptoapp.data.database.CoinInfoDbModel
-import com.demo.cryptoapp.data.network.model.CoinInfoDto
-import com.demo.cryptoapp.data.network.model.CoinInfoJsonContainerDto
-import com.demo.cryptoapp.data.network.model.CoinNamesListDto
-import com.demo.cryptoapp.domain.CoinFavouriteInfo
-import com.demo.cryptoapp.domain.CoinInfo
+import com.demo.cryptoapp.data.database.models.CoinFavouriteInfoDbModel
+import com.demo.cryptoapp.data.database.models.CoinInfoDbModel
+import com.demo.cryptoapp.data.network.models.CoinInfoDto
+import com.demo.cryptoapp.data.network.models.CoinInfoJsonContainerDto
+import com.demo.cryptoapp.data.network.models.CoinNamesListDto
+import com.demo.cryptoapp.domain.models.CoinFavouriteInfo
+import com.demo.cryptoapp.domain.models.CoinInfo
 import com.google.gson.Gson
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
-class CoinMapper {
+object CoinMapper {
+
+    private const val BASE_IMAGE_URL = "https://cryptocompare.com"
+    private const val AS_MILLISECONDS = 1000
+    private const val SEPARATOR = ","
+    private const val TIME_FORMAT = "HH:mm:ss"
+    private const val VALUE_IS_EMPTY = ""
 
     fun mapJsonContainerToListCoinInfo(jsonContainer: CoinInfoJsonContainerDto): List<CoinInfoDto> {
         val result = mutableListOf<CoinInfoDto>()
@@ -65,19 +72,6 @@ class CoinMapper {
         imageUrl = dbModel.imageUrl
     )
 
-    fun mapFavouriteDbModelToFavouriteEntity(
-        favouriteDbModel: CoinFavouriteInfoDbModel
-    ) = CoinFavouriteInfo(
-        fromSymbol = favouriteDbModel.fromSymbol,
-        toSymbol = favouriteDbModel.toSymbol,
-        price = favouriteDbModel.price,
-        lastUpdate = favouriteDbModel.lastUpdate,
-        highDay = favouriteDbModel.highDay,
-        lowDay = favouriteDbModel.lowDay,
-        lastMarket = favouriteDbModel.lastMarket,
-        imageUrl = favouriteDbModel.imageUrl
-    )
-
     fun mapListDbModelToListEntities(
         listDbModel: List<CoinInfoDbModel>
     ): List<CoinInfo> {
@@ -89,9 +83,7 @@ class CoinMapper {
     fun mapFavouriteListDbModelToFavouriteListEntities(
         favouriteListDbModel: List<CoinFavouriteInfoDbModel>
     ): List<CoinFavouriteInfo> {
-        return favouriteListDbModel.map {
-            mapFavouriteDbModelToFavouriteEntity(it)
-        }
+        return favouriteListDbModel.map { it.toDomain() }
     }
 
     fun mapCoinToCoinFavouriteDbModel(coin: CoinInfo) = CoinFavouriteInfoDbModel(
@@ -106,25 +98,32 @@ class CoinMapper {
     )
 
     fun mapNamesListToString(namesListDto: CoinNamesListDto): String {
-        return namesListDto.names?.map { it.coinNameDto?.name }?.joinToString(",") ?: ""
+        return namesListDto.names?.map { it.coinNameDto?.name }?.joinToString(SEPARATOR)
+            ?: VALUE_IS_EMPTY
     }
 
     fun mapNamesListToString(namesList: List<String>): String {
-        return namesList.joinToString(",")
+        return namesList.joinToString(SEPARATOR)
     }
+
+    private fun CoinFavouriteInfoDbModel.toDomain() = CoinFavouriteInfo(
+        fromSymbol = fromSymbol,
+        toSymbol = toSymbol,
+        price = price,
+        lastUpdate = lastUpdate,
+        highDay = highDay,
+        lowDay = lowDay,
+        lastMarket = lastMarket,
+        imageUrl = imageUrl
+    )
 
     private fun convertTimestampToTime(timestamp: Long?): String {
-        if (timestamp == null) return ""
-        val stamp = Timestamp(timestamp * 1000)
-        val date = Date(stamp.time)
-        val pattern = "HH:mm:ss"
-        val sdf = SimpleDateFormat(pattern, Locale.getDefault())
-        sdf.timeZone = TimeZone.getDefault()
-        return sdf.format(date)
-    }
-
-    companion object {
-
-        const val BASE_IMAGE_URL = "https://cryptocompare.com"
+        timestamp?.let {
+            val date = Date(it * AS_MILLISECONDS)
+            val simpleDateFormat = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
+            simpleDateFormat.timeZone = TimeZone.getDefault()
+            return simpleDateFormat.format(date)
+        }
+        return VALUE_IS_EMPTY
     }
 }

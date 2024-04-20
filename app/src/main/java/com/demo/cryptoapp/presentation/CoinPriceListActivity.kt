@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.demo.cryptoapp.R
 import com.demo.cryptoapp.databinding.ActivityCoinPriceListBinding
-import com.demo.cryptoapp.domain.CoinFavouriteInfo
-import com.demo.cryptoapp.domain.CoinInfo
+import com.demo.cryptoapp.domain.models.CoinFavouriteInfo
+import com.demo.cryptoapp.domain.models.CoinInfo
 import com.demo.cryptoapp.presentation.adapters.CoinFavouriteInfoAdapter
 import com.demo.cryptoapp.presentation.adapters.CoinInfoAdapter
 import kotlinx.coroutines.launch
@@ -112,7 +112,7 @@ class CoinPriceListActivity : AppCompatActivity() {
                 changeAdapter(switchList.isChecked)
             }
 
-            switchList.setOnCheckedChangeListener { compoundButton, isChecked ->
+            switchList.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     tvFavourite.setTextColor(getColor(R.color.teal_200))
                     tvTotal.setTextColor(getColor(R.color.black))
