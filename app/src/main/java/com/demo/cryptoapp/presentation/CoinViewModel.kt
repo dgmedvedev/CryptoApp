@@ -3,7 +3,15 @@ package com.demo.cryptoapp.presentation
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.demo.cryptoapp.data.repository.CoinRepositoryImpl
-import com.demo.cryptoapp.domain.*
+import com.demo.cryptoapp.domain.models.CoinFavouriteInfo
+import com.demo.cryptoapp.domain.models.CoinInfo
+import com.demo.cryptoapp.domain.usecases.DeleteCoinFavouriteInfoUseCase
+import com.demo.cryptoapp.domain.usecases.GetCoinFavouriteInfoListUseCase
+import com.demo.cryptoapp.domain.usecases.GetCoinInfoListUseCase
+import com.demo.cryptoapp.domain.usecases.GetCoinInfoUseCase
+import com.demo.cryptoapp.domain.usecases.InsertCoinFavouriteInfoUseCase
+import com.demo.cryptoapp.domain.usecases.LoadDataUseCase
+import com.demo.cryptoapp.domain.usecases.StopAllWorkersUseCase
 
 class CoinViewModel(application: Application) : AndroidViewModel(application) {
 

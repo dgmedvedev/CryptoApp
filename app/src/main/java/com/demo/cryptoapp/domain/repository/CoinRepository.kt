@@ -1,6 +1,8 @@
-package com.demo.cryptoapp.domain
+package com.demo.cryptoapp.domain.repository
 
 import androidx.lifecycle.LiveData
+import com.demo.cryptoapp.domain.models.CoinFavouriteInfo
+import com.demo.cryptoapp.domain.models.CoinInfo
 
 interface CoinRepository {
 

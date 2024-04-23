@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.ListAdapter
 import com.demo.cryptoapp.R
 import com.demo.cryptoapp.databinding.ItemCoinInfoBinding
-import com.demo.cryptoapp.domain.CoinInfo
+import com.demo.cryptoapp.domain.models.CoinInfo
 import com.squareup.picasso.Picasso
 
 class CoinInfoAdapter(private val context: Context) :

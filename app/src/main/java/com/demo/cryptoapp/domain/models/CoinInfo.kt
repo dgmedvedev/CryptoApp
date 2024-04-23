@@ -1,6 +1,6 @@
-package com.demo.cryptoapp.domain
+package com.demo.cryptoapp.domain.models
 
-data class CoinFavouriteInfo(
+data class CoinInfo(
     val fromSymbol: String,
     val toSymbol: String?,
     val price: Double?,

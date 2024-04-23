@@ -1,7 +1,7 @@
 package com.demo.cryptoapp.presentation.adapters
 
 import androidx.recyclerview.widget.DiffUtil
-import com.demo.cryptoapp.domain.CoinFavouriteInfo
+import com.demo.cryptoapp.domain.models.CoinFavouriteInfo
 
 class CoinFavouriteInfoDiffCallback : DiffUtil.ItemCallback<CoinFavouriteInfo>() {
     override fun areItemsTheSame(

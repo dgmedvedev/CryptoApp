@@ -8,16 +8,16 @@ import androidx.work.WorkManager
 import com.demo.cryptoapp.data.database.AppDatabase
 import com.demo.cryptoapp.data.mapper.CoinMapper
 import com.demo.cryptoapp.data.workers.RefreshDataWorker
-import com.demo.cryptoapp.domain.CoinFavouriteInfo
-import com.demo.cryptoapp.domain.CoinInfo
-import com.demo.cryptoapp.domain.CoinRepository
+import com.demo.cryptoapp.domain.models.CoinFavouriteInfo
+import com.demo.cryptoapp.domain.models.CoinInfo
+import com.demo.cryptoapp.domain.repository.CoinRepository
 
 class CoinRepositoryImpl(
-    private val application: Application
+    application: Application
 ) : CoinRepository {
 
     private val coinInfoDao = AppDatabase.getInstance(application).coinInfoDao()
-    private val mapper = CoinMapper()
+    private val mapper = CoinMapper
 
     private val workManager = WorkManager.getInstance(application)
 

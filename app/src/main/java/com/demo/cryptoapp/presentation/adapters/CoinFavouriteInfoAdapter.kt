@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.demo.cryptoapp.R
 import com.demo.cryptoapp.databinding.ItemCoinInfoBinding
-import com.demo.cryptoapp.domain.CoinFavouriteInfo
+import com.demo.cryptoapp.domain.models.CoinFavouriteInfo
 import com.squareup.picasso.Picasso
 
 class CoinFavouriteInfoAdapter(private val context: Context) :
